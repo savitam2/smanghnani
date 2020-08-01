@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Population growth over years</title>
+    <style type="text/css">
+        input#Category {
+            background-color:rgba(0, 0, 0, 0);
+            color:black;
+            border: none;
+            outline:none;
+        }
+
+        circle {
+            stroke: black;
+        }
+
+        .tooltip {
+            position: absolute;
+            text-align: center;
+            padding: 2px;
+            font: 12px sans-serif;
+            background: lightsteelblue;
+            border: 0px;
+            border-radius: 8px;
+            pointer-events: none;
+        }
+
+        .text {
+          font: 16px sans-serif;
+          text-color:red;
+        }
+
+    </style>
+</head>
+<script src='https://d3js.org/d3.v5.min.js'></script>
+<style> rect {fill: lightblue; stroke: black; }</style>
+<body onload="init()">
+<!-- Heading -->
+<h1>Fuel Efficiency Data, 2017</h1>
+<!-- Information about data -->
+<p></p>
+
+<input id="next" value="Next" type="button">
+<input id="page" value="scatterplot" hidden>
+<script defer>
+
+// Define canvas scales
+var svgWidth = 800;
+var svgHeight = 650;
+var margin = 50;
+var width = svgWidth - 2* margin;
+var height = svgHeight - 2 * margin;
+var colour_range = ["red", "white", "green"]
+
+async function init() {
+    // Read data
+    const data = await d3.csv("cars2017.csv");
+
+    // Define scales
+    var manufacturer = d3.scaleBand().domain();
+    var xs = d3.scaleLog().base(10).domain([10,150]).range([0, width]);
+    var ys = d3.scaleLog().base(10).domain([10,150]).range([height, 0]);
+    var cs = d3.scaleLinear().domain([0, width]).range(["red","green"]);
+    // https://github.com/d3/d3-scale-chromatic
+    var colorscale = d3.scaleOrdinal(d3.schemeAccent).domain([0, width]);
+    var num_colours = colour_range.length;
+     var diff = width;
+
+     var step = diff / (colour_range.length - 1);
+     var for_inversion = d3.range(num_colours).map(function(d) {return d*step;});
+     var log_colour_values = for_inversion.map(xs.invert);
+
+
+
+     var logColour_scale = d3.scaleLog().domain(log_colour_values).range(colour_range);
+
+
+    // Define the div for the tooltip
+    var div = d3.select("body").append("div")
+        .attr("class", "tooltip")
+        .style("opacity", 0);
+
+    d3.select("svg")
+        .attr("width", svgWidth)
+        .attr("height", svgHeight)
+        .style("position", "absolute");
+
+    var svg = d3.select("svg");
+
+    svg.append("g")
+        .attr("transform", "translate("+margin+","+margin+")")
+        .selectAll("circle")
+            .data(data)
+            .enter()
+            .append("circle")
+                .attr("cx", function(d) {return xs(d.AverageHighwayMPG);})
+                .attr("cy", function(d) {return ys(d.AverageCityMPG);})
+                .attr("r", function(d) {return 5;})
+                .attr("fill", function(d) {return logColour_scale(d.AverageCityMPG)})
+                .on("mouseover", function(d) {
+                    div.transition()
+                        .duration(200)
+                        .style("opacity", 0.9);
+                    div.html("Make: " + d.Make + "</br>" + "Fuel type: "+ d.Fuel + "</br>" +"Cylinders: " + d.EngineCylinders + "<br/>"  + "Average City MPG: " + d.AverageCityMPG + "<br/>"  + "Average Highway MPG: " + d.AverageHighwayMPG)
+                        .style("left", (d3.event.pageX + 30) + "px")
+                        .style("top", (d3.event.pageY - 30) + "px");
+                })
+                .on("mouseout", function(d) {
+                    div.transition()
+                        .duration(500)
+                        .style("opacity", 0);
+                });
+
+    svg.append("g")
+        .attr("transform", "translate("+margin+","+(margin+ height)+")")
+        .call(d3.axisBottom(xs).tickValues([10,20,50,100,150]).tickFormat(d3.format("~s")));
+
+
+    svg.append("g")
+        .attr("transform", "translate("+margin+","+margin+")")
+        .call(d3.axisLeft(ys).tickValues([10,20,50,100,150]).tickFormat(d3.format("~s")));
+
+
+
+    // Environment friendly cars
+    svg.append("line")
+        .transition()
+        .duration(3000)
+        .attr("x1", 540)
+        .attr("y1", 150)
+        .attr("x2", 680)
+        .attr("y2", 20)
+        .attr("stroke", "green")
+        .attr("stroke-width", "1");
+
+    svg.append("text")
+        .transition()
+        .duration(3000)
+        .attr("dy", ".15em")
+        .attr('text-anchor', 'middle')
+        .attr("class", "text")
+        .attr("transform", "translate(610,70) rotate(319)")
+        .attr("fill", "darkgreen")
+        .text("Environment friendly cars -->");
+
+
+    // Not environment friendly cars
+    svg.append("line")
+        .transition()
+        .duration(3000)
+        .attr("x1", 150)
+        .attr("y1", 550)
+        .attr("x2", 420)
+        .attr("y2", 250)
+        .attr("stroke", "darkred")
+        .attr("stroke-width", "1");
+
+    svg.append("text")
+        .transition()
+        .duration(3000)
+        .attr("x", -60)
+        .attr("dy", ".15em")
+        .attr('text-anchor', 'middle')
+        .attr("class", "text")//easy to style with CSS
+        .attr("transform", "translate(350,280) rotate(312)")
+        .attr("fill", "darkred")
+        .text("<-- Environment unfriendly cars ");
+
+
+    // text label for the x axis
+     svg.append("text")
+        .attr("x", 150)
+        .attr("dy", ".15em")
+        .attr('text-anchor', 'middle')
+        .attr("class", "text")//easy to style with CSS
+        .attr("transform", "translate(300,640) rotate(0)")
+        .attr("fill", "black")
+        .text("Average Highway MPG");
+
+     // text label for the y axis
+     svg.append("text")
+        .attr("y", 350)
+        .attr("dy", ".15em")
+        .attr('text-anchor', 'middle')
+        .attr("class", "text")//easy to style with CSS
+        .attr("transform", "translate(-330,300) rotate(270)")
+        .attr("fill", "black")
+        .text("Average City MPG");
+
+     // mouseover text
+     svg.append('g')
+        .append('text')
+        .transition()
+        .duration(3000)
+        .attr("x", 460)
+        .attr("y", 560)
+        .attr("id","anno")
+        .text("Please mouse over individual state for more details..")
+        .attr("font-size", "12px")
+        .attr("font-weight","italic")
+        .style("fill", "gray")
+
+
+    // https://stackoverflow.com/questions/24588883/populate-dropdown-list-with-csv-file-d3
+    d3.select("#mpgCategory")
+        .selectAll("option")
+        .data(categories)
+        .enter()
+        .append("option")
+        .attr("value", function (d) { return d.value; })
+        .text(function (d) { return d.label; });
+
+}
+
+// Modify screen description based on MPG Category
+function changeCategory() {
+    var cat = document.getElementById("mpgCategory");
+    document.getElementById("Category").value = cat.options[cat.selectedIndex].text;
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Makes and fuel efficiency</title>
+</head>
+<script src='https://d3js.org/d3.v5.min.js'></script>
+<body>
+
+<div>
+    <center>
+        <label for="Category">Displaying chart for </label>
+        <input id="Category" value="Average City MPG" readonly >
+    </center>
+</div>
+<div>
+    <!-- Trigger -->
+   <left>
+       <label for="mpgCategory">Select MPG category</label>
+       <select id="mpgCategory" onchange="changeCategory()"></select>
+   </left>
+</div>
+
+
+<!-- svg Canvas -->
+<svg></svg>
+
+<input id="previous" value="Previous" type="button">
+<input id="next" value="Next" type="button">
+
+<script defer>
+
+// Define canvas scales
+var svgWidth = 800;
+var svgHeight = 650;
+var margin = 50;
+var width = svgWidth - 2* margin;
+var height = svgHeight - 2 * margin;
+var colour_range = ["red", "white", "green"]
+
+// Define triggers
+var categories = [{"label":"Average City MPG", "value": "AverageCityMPG"},
+                  {"label": "Average Highway MPG", "value": "AverageHighwayMPG"}];
+
+
+async function init() {
+    // Read data
+    const data = await d3.csv("cars2017.csv");
+
+}
+</script>
+
+</body>
+</html>

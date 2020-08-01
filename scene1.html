@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<script src='https://d3js.org/d3.v5.min.js'></script>
+<style> rect {fill: lightblue; stroke: black; }</style>
+<body>
+<svg width=300 height=300>
+</svg>
+<script>
+    var data = [4,8,15,16,23,42];
+    var height = d3.select("svg").attr("height");
+    var frameHeight = 200;
+    var margin = (height - frameHeight) / 2;
+    var ys = d3.scaleBand().domain([4,8,15,16,23,42]).range([0, 200]);
+    var xs = d3.scaleBand().domain([0,1,2,3,4,5]).range([0,200]);
+
+    d3.select("svg")
+    .selectAll("rect")
+    .data(data)
+    .enter()
+    .append("rect")
+    .attr("x", function(d, i) {return xs.bandwidth() * (i-1);})
+    .attr("width", xs.bandwidth())
+    .attr("height", function(d, i) {return  ys(d);});
+
+</script>
+</body>
+</html>
