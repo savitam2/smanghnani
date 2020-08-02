@@ -14,6 +14,15 @@
             border-radius: 8px;
             pointer-events: none;
         }
+
+        input#Category {
+            background-color:rgba(0, 0, 0, 0);
+            color:black;
+            border: none;
+            outline:none;
+
+        }
+
     </style>
 </head>
 <script src='https://d3js.org/d3.v5.min.js'></script>
@@ -21,9 +30,25 @@
 
 <div>
     <center>
-        <label for="Category">Displaying chart for </label>
-        <input id="Category" value="Average City MPG" readonly >
+       <h1> <label for="Category">Comparing environment friendliness based on </label>
+        <input style="font: 30px sans-serif ;" id="Category" value="Average City MPG" disabled ></h1>
     </center>
+</div>
+<div>
+    <p>
+        avkjhdvfn
+        hjsgvkbc vlxcmnz</br></br>
+
+
+        skhjdgfksjdhvl ;c</br></br></br>
+
+
+
+
+        ajsdhfgvksjgvlbksc
+
+    </p>
+
 </div>
 <div>
     <!-- Trigger -->
@@ -35,9 +60,13 @@
 
 
 <!-- svg Canvas -->
+<div>
 <svg id="gasoline"></svg>
+</div>
 <p>Diesel data</p>
+<div>
 <svg id="diesel"></svg>
+</div>
 <div id="canvas"></div>
 
 <input id="previous" value="Previous" type="button">
@@ -47,7 +76,7 @@
 
 // Define canvas scales
 var svgWidth = 800;
-var svgHeight = 650;
+var svgHeight = 800;
 var margin = 50;
 var width = svgWidth - 2* margin;
 var height = svgHeight - 2 * margin;
@@ -81,9 +110,9 @@ async function init() {
     // Define scales
     var manufacturer = d3.scaleBand().domain();
     xs = d3.scaleBand().padding(0.1).range([0, width]);
-    ys = d3.scaleLog().base(10).domain([10,300]).range([height, 0]);
+    ys = d3.scaleLinear().domain([10,300]).range([height, 0]);
     // https://github.com/d3/d3-scale-chromatic
-    colorscale = d3.scaleOrdinal().domain(data.map(function(d) { return d.EngineCylinders; })).range(d3.schemeSet2);
+    colorscale = d3.scaleOrdinal().domain([2,3,4,6,8,10,12]).range(d3.schemeSet2);
 
     // https://stackoverflow.com/questions/24588883/populate-dropdown-list-with-csv-file-d3
     d3.select("#mpgCategory")
@@ -109,8 +138,9 @@ async function init() {
     });
     gasolineData = data.filter(function(d) {return d.Fuel == "Gasoline";});
     dieselData = data.filter(function(d) {return d.Fuel == "Diesel";});
-    updateCharts(gasolineSvg, selectedCategory, gasolineData, gasolineToolTipDiv);
     updateCharts(dieselSvg, selectedCategory, dieselData, dieselToolTipDiv);
+    updateCharts(gasolineSvg, selectedCategory, gasolineData, gasolineToolTipDiv);
+
 
 
 }
@@ -125,6 +155,7 @@ async function changeCategory() {
     });
     gasolineData = data.filter(function(d) {return d.Fuel == "Gasoline";});
     dieselData = data.filter(function(d) {return d.Fuel == "Diesel";});
+
     var cat = document.getElementById("mpgCategory");
     document.getElementById("Category").value = cat.options[cat.selectedIndex].text;
     selectedCategory = cat.options[cat.selectedIndex].value;
@@ -133,18 +164,23 @@ async function changeCategory() {
 }
 
 function updateCharts(svg, category, data, tooltipDiv) {
-    // Define the div for the tooltip
-    if(data.length ==6) {
-        console.log(data);
-        data.forEach(function(d) {console.log(d[category]);});
-    }
-    svg.selectAll("rect.negative").remove();
+
+    svg.selectAll("rect."+category).remove();
     xs.domain(data.map(function(d) { return d.Make; }));
+
     var c1 = svg.append("g")
         .attr("transform", "translate("+margin+","+margin+")")
-        .selectAll("rect")
-            .data(data)
-            .on("mouseover", function(d) {
+        .selectAll("rect."+category)
+            .data(data);
+        c1.enter()
+            .append("rect")
+                .attr("class", category)
+                .attr("x", function(d) {return xs(d.Make);})
+                .attr("y", function(d) {if(data.length ==6) { d[category] };return ys(d[category])})
+                .attr("width", xs.bandwidth())
+                .attr("height", function(d) {return ys(d[category]);})
+                .attr("fill", function(d) {return colorscale(d.EngineCylinders)})
+                .on("mouseover", function(d) {
                     tooltipDiv.transition()
                         .duration(200)
                         .style("opacity", 0.9);
@@ -158,19 +194,21 @@ function updateCharts(svg, category, data, tooltipDiv) {
                         .style("opacity", 0);
                 });
 
-            c1.enter()
-            .append("rect")
-                .attr("x", function(d) {return xs(d.Make);})
-                .attr("y", function(d) {if(data.length ==6) { d[category] };return ys(d[category])})
-                .attr("width", xs.bandwidth())
-                .attr("height", function(d) {return height - ys(d[category]);})
-                .attr("fill", function(d) {return colorscale(d.Make)});
+    svg.append("g")
+        .attr("transform", "translate("+margin+","+(height + margin)+")")
+        .call(d3.axisBottom(xs))
+        .selectAll("text")
+            .style("text-anchor", "end")
+            .attr("dx", "-.8em")
+            .attr("dy", ".15em")
+            .attr("transform", "rotate(-65)");
 
     svg.append("g")
         .attr("transform", "translate("+margin+","+margin+")")
-        .call(d3.axisBottom(xs));
+        .call(d3.axisLeft(ys));
 
 }
+
 
 
 </script>

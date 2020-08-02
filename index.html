@@ -202,22 +202,8 @@ async function init() {
         .style("fill", "gray")
 
 
-    // https://stackoverflow.com/questions/24588883/populate-dropdown-list-with-csv-file-d3
-    d3.select("#mpgCategory")
-        .selectAll("option")
-        .data(categories)
-        .enter()
-        .append("option")
-        .attr("value", function (d) { return d.value; })
-        .text(function (d) { return d.label; });
-
 }
 
-// Modify screen description based on MPG Category
-function changeCategory() {
-    var cat = document.getElementById("mpgCategory");
-    document.getElementById("Category").value = cat.options[cat.selectedIndex].text;
-}
 
 </script>
 
