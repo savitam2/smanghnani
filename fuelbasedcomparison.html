@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Makes and fuel efficiency</title>
+    <style type="text/css">
+        .tooltipDiesel {
+            position: fixed;
+            text-align: center;
+            padding: 2px;
+            font: 12px sans-serif;
+            background: lightsteelblue;
+            border: 0px;
+            border-radius: 8px;
+            pointer-events: none;
+        }
+
+        input#Category {
+            background-color:rgba(0, 0, 0, 0);
+            color:black;
+            border: none;
+            outline:none;
+
+        }
+
+        .next {
+            float: right;
+            background-color: #4CAF50;
+            color: white;
+		}
+        .previous {
+            float: right;
+            background-color: #bac1ba;
+            color: black;
+	    }
+
+    </style>
+</head>
+<script src='https://d3js.org/d3.v5.min.js'></script>
+<body onload="init()">
+
+<div>
+    <center>
+       <h1> <label for="Category">Comparing environment friendliness based on </label>
+        <input style="font: 30px sans-serif ;" id="Category" value="Average City MPG" disabled ></h1>
+    </center>
+</div>
+<div>
+    <p>
+        avkjhdvfn
+        hjsgvkbc vlxcmnz</br></br>
+
+
+        skhjdgfksjdhvl ;c</br></br></br>
+
+
+
+
+        ajsdhfgvksjgvlbksc
+
+    </p>
+
+</div>
+<div>
+    <!-- Trigger -->
+   <left>
+       <label for="mpgCategory">Select MPG category</label>
+       <select id="mpgCategory" onchange="changeCategory()"></select>
+   </left>
+</div>
+
+<div style="text-align:right">
+    <table style="margin-left:auto;margin-right:auto;">
+        <tr>
+            <td>
+                <a href="index.html" class="previous">Previous Slide</a>
+            </td>
+            <td></td>
+            <td>
+                Page 2/3
+            </td>
+            <td></td>
+            <td>
+                <a href="diesel.html" class="next">Next Slide</a>
+            </td>
+        </tr>
+    </table>
+</div>
+
+
+<!-- svg Canvas -->
+<div>
+<svg id="gasoline"></svg>
+</div>
+<p>Diesel data</p>
+<div>
+<svg id="diesel"></svg>
+</div>
+
+
+
+
+<script defer>
+
+// Define canvas scales
+var svgWidth = screen.width - 60;
+var svgHeight = 500;
+var margin = 95;
+var width = svgWidth - 2* margin;
+var height = svgHeight - 2 * margin;
+
+// Define triggers
+var categories = [{"label":"Average City MPG", "value": "AverageCityMPG"},
+                  {"label": "Average Highway MPG", "value": "AverageHighwayMPG"}];
+
+
+var selectedCategory = "AverageCityMPG";
+var gasolineSvg = d3.select("#gasoline");
+var dieselSvg = d3.select("#diesel");
+var xs;
+var ys;
+var colorscale;
+var gasolineData;
+var dieselData;
+
+var dieselToolTipDiv = d3.select("body").append("div")
+    .attr("class", "tooltipDiesel")
+    .style("opacity", 0);
+
+dieselToolTipDiv.append("text")
+  .attr("x", 15)
+  .attr("dy", "1.2em")
+  .style("text-anchor", "middle")
+  .attr("font-size", "12px")
+  .attr("font-weight", "bold");
+
+var gasolineToolTipDiv = d3.select("body").append("div")
+    .attr("class", "tooltipGasoline")
+    .style("opacity", 0);
+
+var x_axis_g = gasolineSvg.append("g")
+                .attr("class", "myXaxis_g")
+                .attr("transform", "translate("+margin+","+(height + margin)+")");
+
+var y_axis_g = gasolineSvg.select("g")
+                .attr("class", "myYaxis_g")
+                .attr("transform", "translate("+margin+","+margin+")");
+
+var x_axis_d = dieselSvg.append("g")
+                .attr("class", "myXaxis_d")
+                .attr("transform", "translate("+margin+","+(height + margin)+")");
+
+var y_axis_d = dieselSvg.select("g")
+                .attr("class", "myYaxis_d")
+                .attr("transform", "translate("+margin+","+margin+")");
+
+async function init() {
+    // Read data
+
+    const data = await d3.csv("cars2017.csv", function(d) {
+        return {Make: d.Make+"_"+d.EngineCylinders, Fuel: d.Fuel, EngineCylinders: d.EngineCylinders, AverageHighwayMPG: d.AverageHighwayMPG, AverageCityMPG: d.AverageCityMPG }
+    });
+    // Define scales
+    var manufacturer = d3.scaleBand().domain();
+    xs = d3.scaleBand().padding(0.1).range([0, width]);
+    ys = d3.scaleLinear().range([height, 0]);
+    // https://github.com/d3/d3-scale-chromatic
+    colorscale = d3.scaleOrdinal().domain([2,3,4,6,8,10,12]).range(d3.schemeSet2);
+
+    // https://stackoverflow.com/questions/24588883/populate-dropdown-list-with-csv-file-d3
+    d3.select("#mpgCategory")
+        .selectAll("option")
+        .data(categories)
+        .enter()
+        .append("option")
+        .attr("value", function (d) { return d.value; })
+        .text(function (d) { return d.label; });
+
+    gasolineSvg.attr("width", svgWidth)
+        .attr("height", svgHeight)
+        .attr("position", "fixed");
+
+    dieselSvg.attr("width", svgWidth)
+        .attr("height", svgHeight)
+        .attr("position", "fixed");
+
+    data.sort(function(a,b) {
+        return a.EngineCylinders - b.EngineCylinders;
+    });
+    gasolineData = data.filter(function(d) {return d.Fuel == "Gasoline";});
+    dieselData = data.filter(function(d) {return d.Fuel == "Diesel";});
+    updateCharts(gasolineSvg, selectedCategory, gasolineData, gasolineToolTipDiv, "gasoline", x_axis_g, y_axis_g);
+    updateCharts(dieselSvg, selectedCategory, dieselData, dieselToolTipDiv, "diesel", x_axis_d, y_axis_d);
+
+
+
+}
+
+
+// Modify screen description based on MPG Category
+async function changeCategory() {
+    // Read data
+    const data = await d3.csv("cars2017.csv", function(d) {
+        return {Make: d.Make+"_"+d.EngineCylinders, Fuel: d.Fuel, EngineCylinders: d.EngineCylinders, AverageHighwayMPG: d.AverageHighwayMPG, AverageCityMPG: d.AverageCityMPG }
+    });
+    data.sort(function(a,b) {
+        return a.EngineCylinders - b.EngineCylinders;
+    });
+    gasolineData = data.filter(function(d) {return d.Fuel == "Gasoline";});
+    dieselData = data.filter(function(d) {return d.Fuel == "Diesel";});
+
+    var cat = document.getElementById("mpgCategory");
+    document.getElementById("Category").value = cat.options[cat.selectedIndex].text;
+    selectedCategory = cat.options[cat.selectedIndex].value;
+    updateCharts(gasolineSvg, selectedCategory, gasolineData, gasolineToolTipDiv, "gasoline", x_axis_g, y_axis_g);
+    updateCharts(dieselSvg, selectedCategory, dieselData, dieselToolTipDiv, "diesel", x_axis_d, y_axis_d);
+}
+
+function updateCharts(svg, category, data, tooltipDiv, className, x_axis, y_axis) {
+    console.log(category);
+    var toolTipDiv1 = d3.select("body").append("div")
+        .attr("class", "tooltip"+className)
+        .style("opacity", 0);
+    svg.selectAll("rect."+className).remove();
+    xs.domain(data.map(function(d) { return d.Make; }));
+    var y_max = d3.max(data, function(d) {return d[category];});
+    if (data.length == 6){
+    console.log("Y max: " + y_max);
+    }
+    ys.domain([0, d3.max(data, function(d) {return d[category];})]);
+
+    var c1 = svg.append("g")
+        .attr("transform", "translate("+margin+","+margin+")")
+        .selectAll("rect."+className)
+            .data(data);
+        c1.enter()
+            .append("rect")
+                .attr("class", className)
+                .attr("x", function(d) {return xs(d.Make);})
+                .attr("y", function(d) {return  ys(d[category])})
+                .attr("width", xs.bandwidth())
+                .attr("height", function(d) {return height - ys(d[category]);})
+                .attr("fill", function(d) {return colorscale(d.EngineCylinders)})
+                .on("mouseover", function(d) {
+                    toolTipDiv1.transition()
+                        .duration(200)
+                        .style("opacity", 1);
+                    toolTipDiv1.html("Make: " + d.Make + "</br>" +"Cylinders: " + d.EngineCylinders + "<br/>"  + "Average MPG: " + d[category])
+                        .style("left", (d3.event.pageX + 30) + "px")
+                        .style("top", (d3.event.pageY - 30) + "px");
+                })
+                .on("mouseout", function(d) {
+                    toolTipDiv1.transition()
+                        .duration(100)
+                        .style("opacity", 0);
+                });
+
+
+            //x_axis
+            svg.append("g")
+                        .attr("class", "x_"+category)
+                        .attr("transform", "translate("+margin+","+(height + margin)+")")
+            .transition()
+                .duration(1000)
+                .call(d3.axisBottom(xs))
+                .selectAll("text")
+                        .style("text-anchor", "end")
+                        .attr("dx", "-.8em")
+                        .attr("dy", ".15em")
+                        .attr("transform", "translate(-15,10)rotate(-45)");
+
+            y_axis.transition()
+                .duration(1000)
+                .call(d3.axisLeft(ys));
+
+
+
+}
+
+
+
+</script>
+
+</body>
+</html>
