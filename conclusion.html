@@ -29,14 +29,14 @@
           text-color:red;
         }
         .next {
-            float: right;
-            background-color: #4CAF50;
+            background-color: green;
             color: white;
+            position: relative;
 		}
         .previous {
-            float: right;
-            background-color: #bac1ba;
-            color: black;
+            background-color: green;
+            color: white;
+            position: relative;
 	    }
 
 	    div#nav {
@@ -51,19 +51,22 @@
 </head>
 <script src='https://d3js.org/d3.v5.min.js'></script>
 <body onload="init()">
+<center><h1>Conclusion</h1></center>
 <div>
-    <!-- Trigger -->
-    <left>
-        <label for="mpgCategory">Select MPG category</label>
-        <select id="mpgCategory" onchange="changeCategory()"></select>
-    </left>
+    <p>
+        Based on previous slide we can conclude the more the number of cylinders, lesser the fuel efficiency irrespective of fuel type thus less environment friendly the car.
+        Impact of fuel type is also pronounced on fuel efficiency city limit driving than highway driving. </br>
+
+        One of the techniques manufacturers are applying these days to further the fuel efficiency even with more number of cylinders is <a href="https://www.jdpower.com/cars/shopping-guides/cylinder-deactivation-how-it-can-save-fuel"> partial shut down of cylinders</a>.
+        The graph below depicts the top 10 car makes which provide better fuel efficiency with higher number of cylinders compared to lower number of cylinders as they employ partial cylinder deactivation. </br></br></br>    </p>
+
 </div>
 
 <div style="text-align:right; float: right;" id="nav">
     <table style="margin-left:auto;margin-right:auto;">
         <tr>
             <td>
-                <a href="fuelbasedcomparison.html" class="previous">Previous Slide</a>
+                <a href="fuelbasedcomparison.html" class="previous">Fuel Based Comparison</a>
             </td>
             <td></td>
             <td>
@@ -78,9 +81,24 @@
 </div>
 
 <div>
-    <h3> <label for="Category">Top 10 based on </label>
-        <input style="font: 30px sans-serif ;" id="Category" value="Average City MPG" disabled ></h3>
+    <!-- Trigger -->
+    <left>
+        <label for="mpgCategory">Select MPG category</label>
+        <select id="mpgCategory" onchange="changeCategory()"></select>
+    </left>
     <svg></svg>
+</div>
+
+<div>
+    <br>
+    In conclusion, fuel type and number of cylinders would decide the fuel efficiency of the car, thus environment friendly. So when you are buying your next car, pay attention to discussed factors before making a choice.
+    </br></br><h3>Further reading:</h3>
+        <a href="https://www.ucsusa.org/resources/brief-history-us-fuel-efficiency">History fuel efficiency standards in US</a></br>
+        <a href="https://www.consumerreports.org/fuel-economy-efficiency/the-race-to-improve-fuel-economy/">Manufacturer race to improve fuel efficiency</a></br>
+        <a href="https://www.epa.gov/automotive-trends/highlights-automotive-trends-report"> Automotive trends</a>
+
+    </p>
+
 </div>
 
 <script defer>
@@ -118,7 +136,7 @@ var tooltipDiv = d3.select("body").append("div")
 
 async function init() {
     const data = await d3.csv("cars2017.csv", function(d) {
-        return {Make: d.Make+"_"+d.EngineCylinders, Fuel: d.Fuel, EngineCylinders: d.EngineCylinders, AverageHighwayMPG: d.AverageHighwayMPG, AverageCityMPG: d.AverageCityMPG, OnlyMake: d.Make }
+        return {Make: d.Make+" ("+d.EngineCylinders+")", Fuel: d.Fuel, EngineCylinders: d.EngineCylinders, AverageHighwayMPG: d.AverageHighwayMPG, AverageCityMPG: d.AverageCityMPG, OnlyMake: d.Make }
     });
 
     xs = d3.scaleBand().padding(0.5).range([0, width]);
@@ -204,7 +222,7 @@ function updateChart(data) {
                            (height + margin + 40) + ")")
       .style("text-anchor", "middle")
       .attr("class", "axis")
-      .text("Make");
+      .text("Make (Number of Cylinders)");
 
     y_axis.text(cat.options[cat.selectedIndex].text)
           .transition()
@@ -224,8 +242,6 @@ function updateChart(data) {
     // mouseover text
      svg.append('g')
         .append('text')
-        .transition()
-        .duration(3000)
         .attr("x", width - 250)
         .attr("y", svgHeight - 10)
         .attr("id","anno")
@@ -254,9 +270,7 @@ function updateChart(data) {
             .attr("y1", 190)
             .attr("x2", 870)
             .attr("y2", 100)
-            .transition()
-            .duration(1000)
-            .style("stroke","red")
+            .style("stroke","black")
             .style("stroke-width","2");
 
     } else {
@@ -267,9 +281,7 @@ function updateChart(data) {
             .attr("y1", 160)
             .attr("x2", 790)
             .attr("y2", 100)
-            .transition()
-            .duration(1000)
-            .style("stroke","red")
+            .style("stroke","black")
             .style("stroke-width","2");
     }
 
@@ -286,9 +298,6 @@ async function changeCategory() {
         return a.EngineCylinders - b.EngineCylinders;
     });
 
-    var cat = document.getElementById("mpgCategory");
-    document.getElementById("Category").value = cat.options[cat.selectedIndex].text;
-    selectedCategory = cat.options[cat.selectedIndex].value;
     updateChart(data);
 }
 

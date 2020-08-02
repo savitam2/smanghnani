@@ -32,29 +32,30 @@
         }
 
         .next {
-            float: right;
-            background-color: #4CAF50;
+            background-color: green;
             color: white;
+            position: relative;
 		}
-    .previous {
-            background-color: #bac1ba;
-            color: black;
-		}
+        .previous {
+            background-color: green;
+            color: white;
+            position: relative;
+	    }
 
-    .friendly {
-        stroke: darkgreen;
-        stroke-width: 2;
-    }
+        .friendly {
+            stroke: darkgreen;
+            stroke-width: 2;
+        }
 
-    .unfriendly {
-        stroke: darkred;
-        stroke-width: 2;
-    }
+        .unfriendly {
+            stroke: darkred;
+            stroke-width: 2;
+        }
 
-    .anno {
-        stroke: black;
-        stroke-width: 2;
-    }
+        .anno {
+            stroke: black;
+            stroke-width: 2;
+        }
 
     </style>
 </head>
@@ -62,15 +63,19 @@
 <style> rect {fill: lightblue; stroke: black; }</style>
 <body onload="init()">
 <!-- Heading -->
-<h1>Fuel Efficiency Data, 2017</h1>
+<center><h1>Fuel Efficiency Data, 2017</h1></center>
 <!-- Information about data -->
-<p>Show car fuel efficiency data</p>
+<p>In today’s day and age, where there is a scarcity of fossil fuels, increase in pollution, and global warming,
+    we should consider buying cars that are fuel-efficient. By doing so, we can help reduce the damage that is being
+    done on our environment. We are destroying our environment every day little by little by smoking, driving cars that
+    are not fuel efficient, ruining our cars, wasting precious energy, not implementing the knowledge we know about
+    environmental protection, etc. This visualization will try to help choose car that is more fuel-efficient cars. <a href="https://matteroftrust.org/environmental-benefits-of-fuel-efficient-cars-that-all-should-know/">Click here</a> to know about benefits of fuel efficient vehicles.</p>
 
-<div style="text-align:right">
+<div style="text-align:right; float: right; padding-right: 25px;">
     <table style="margin-left:auto;margin-right:auto;">
         <tr>
 
-            <td><p>Please <a href="fuelbasedcomparison.html">click here</a> for fuel based comparison </p></td>
+            <td><a href="fuelbasedcomparison.html" class="next">Fuel Based Comparison</a></td>
 
         </tr>
     </table>
@@ -183,7 +188,6 @@ async function init() {
     // Annotations
     // Environment friendly cars
     svg.append("line")
-
         .attr("x1", 530)
         .attr("y1", 150)
         .attr("x2", 660)
@@ -191,7 +195,6 @@ async function init() {
         .attr("class", "friendly");
 
     svg.append("line")
-
         .attr("x1", 660)
         .attr("y1", 40)
         .attr("x2", 640)
@@ -199,7 +202,6 @@ async function init() {
         .attr("class", "friendly");
 
     svg.append("line")
-
         .attr("x1", 660)
         .attr("y1", 40)
         .attr("x2", 645)
@@ -207,7 +209,6 @@ async function init() {
         .attr("class", "friendly");
 
     svg.append("text")
-
         .attr("dy", ".15em")
         .attr('text-anchor', 'middle')
         .attr("class", "text")
@@ -218,7 +219,6 @@ async function init() {
 
     // Not environment friendly cars
     svg.append("line")
-
         .attr("x1", 205)
         .attr("y1", 400)
         .attr("x2", 340)
@@ -226,7 +226,6 @@ async function init() {
         .attr("class", "unfriendly");
 
     svg.append("line")
-
         .attr("x1", 205)
         .attr("y1", 400)
         .attr("x2", 215)
@@ -234,7 +233,6 @@ async function init() {
         .attr("class", "unfriendly");
 
     svg.append("line")
-
         .attr("x1", 205)
         .attr("y1", 400)
         .attr("x2", 230)
@@ -242,7 +240,6 @@ async function init() {
         .attr("class", "unfriendly");
 
     svg.append("text")
-
         .attr("x", -60)
         .attr("dy", ".15em")
         .attr('text-anchor', 'middle')
@@ -273,7 +270,7 @@ async function init() {
         .attr("y2", 170)
         .attr("class", "anno");
 
-
+    // Fuel efficient cars based on Avg Highway MPG
     svg.append("text")
         .transition()
         .duration(4000)
@@ -281,7 +278,7 @@ async function init() {
         .attr("dy", ".15em")
         .attr('text-anchor', 'middle')
         .attr("class", "text")
-        .attr("transform", "translate(590,350) rotate(0)")
+        .attr("transform", "translate(630,350) rotate(0)")
         .attr("fill", "black")
         .text("Most efficient per Avg Highway MPG");
 
@@ -294,6 +291,7 @@ async function init() {
         .attr("y2", 330)
         .attr("class", "anno");
 
+    // Fuel efficient cars based on Avg City MPG
     svg.append("text")
         .transition()
         .duration(5000)
@@ -310,8 +308,8 @@ async function init() {
         .duration(5000)
         .attr("x1", 380)
         .attr("y1", 275)
-        .attr("x2", 240)
-        .attr("y2", 220)
+        .attr("x2", 255)
+        .attr("y2", 210)
         .attr("class", "anno");
 
 

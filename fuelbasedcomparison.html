@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Makes and fuel efficiency</title>
+    <title>Cylinder and fuel based efficiency</title>
     <style type="text/css">
         .tooltipGasoline {
             position: absolute;
@@ -35,14 +35,14 @@
         }
 
         .next {
-            float: right;
-            background-color: #4CAF50;
+            background-color: green;
             color: white;
+            position: relative;
 		}
         .previous {
-            float: right;
-            background-color: #bac1ba;
-            color: black;
+            background-color: green;
+            color: white;
+            position: relative;
 	    }
 
 	    div#nav {
@@ -57,23 +57,18 @@
 
 <div>
     <center>
-       <h1> <label for="Category">Comparing environment friendliness based on </label>
-        <input style="font: 30px sans-serif ;" id="Category" value="Average City MPG" disabled ></h1>
+       <h1> Comparing environment friendliness based on Cylinders and Fuel type</h1>
     </center>
 </div>
 <div>
     <p>
-        avkjhdvfn
-        hjsgvkbc vlxcmnz</br></br>
-
-
-        skhjdgfksjdhvl ;c</br></br></br>
-
-
-
-
-        ajsdhfgvksjgvlbksc
-
+        Congress first established Corporate Average Fuel Economy (CAFE) standards in 1975, largely in response to the 1973 oil embargo.
+        CAFE standards set the average new vehicle fuel economy, as weighted by sales, that a manufacturer's fleet must achieve.
+        In order to improve fuel efficiency car manufacturers have been invested on combination of improvements in engines, transmissions,
+        aerodynamics, and weight reduction; but not at the cost of power boost to car. The number/size/design of cylinders provide higher torque
+        to car which is used in different ways by car based on fuel type. For our discussion we will only concentrate on number of cylinders,
+        <a href="https://www.yourmechanic.com/question/how-do-the-cylinder-numbers-impact-vehicle-performance-and-reliability#:~:text=The%20output%20horsepower%20of%20the,to%20the%20increase%20in%20horsepower.&text=This%20is%20why%20you%20will,in%20larger%20cars%20or%20trucks.">reference</a>.
+        The following graphs below show how number of cylinders have been cause of lower fuel efficiencies.
     </p>
 
 </div>
@@ -89,7 +84,7 @@
     <table style="margin-left:auto;margin-right:auto;">
         <tr>
             <td>
-                <a href="index.html" class="previous">Previous Slide</a>
+                <a href="index.html" class="previous">Overview</a>
             </td>
             <td></td>
             <td>
@@ -97,7 +92,7 @@
             </td>
             <td></td>
             <td>
-                <a href="conclusion.html" class="next">Next Slide</a>
+                <a href="conclusion.html" class="next">Conclusion</a>
             </td>
         </tr>
     </table>
@@ -162,11 +157,38 @@ var y_axis_d = dieselSvg.select("g")
                 .attr("class", "myYaxis_d")
                 .attr("transform", "translate("+margin+","+margin+")");
 
+var y_axis_label_g = gasolineSvg.append("text")
+              .attr("transform", "rotate(-90)")
+              .attr("y", 130 - margin)
+              .attr("x",0 - (height / 2) - 90)
+              .attr("dy", "1em")
+              .style("text-anchor", "middle");
+
+var y_axis_label_d = dieselSvg.append("text")
+              .attr("transform", "rotate(-90)")
+              .attr("y", 130 - margin)
+              .attr("x",0 - (height / 2) - 90)
+              .attr("dy", "1em")
+              .style("text-anchor", "middle");
+var x_axis_label_g = gasolineSvg.append("text")
+              .attr("transform",
+                    "translate(" + (width/2) + " ," +
+                                   (height + margin * 2 - 5) + ")")
+              .style("text-anchor", "middle")
+              .attr("class", "axis");
+
+var x_axis_label_d = dieselSvg.append("text")
+              .attr("transform",
+                    "translate(" + (width/2) + " ," +
+                                   (height + margin * 2 - 5) + ")")
+              .style("text-anchor", "middle")
+              .attr("class", "axis");
+
 async function init() {
     // Read data
 
     const data = await d3.csv("cars2017.csv", function(d) {
-        return {Make: d.Make+"_"+d.EngineCylinders, Fuel: d.Fuel, EngineCylinders: d.EngineCylinders, AverageHighwayMPG: d.AverageHighwayMPG, AverageCityMPG: d.AverageCityMPG, OnlyMake: d.Make }
+        return {Make: d.Make+" ("+d.EngineCylinders+")", Fuel: d.Fuel, EngineCylinders: d.EngineCylinders, AverageHighwayMPG: d.AverageHighwayMPG, AverageCityMPG: d.AverageCityMPG, OnlyMake: d.Make }
     });
     // Define scales
     var manufacturer = d3.scaleBand().domain();
@@ -197,8 +219,8 @@ async function init() {
     });
     gasolineData = data.filter(function(d) {return d.Fuel == "Gasoline";});
     dieselData = data.filter(function(d) {return d.Fuel == "Diesel";});
-    updateCharts(gasolineSvg, selectedCategory, gasolineData, tooltipDiv_g, "gasoline", x_axis_g, y_axis_g);
-    updateCharts(dieselSvg, selectedCategory, dieselData, tooltipDiv_d, "diesel", x_axis_d, y_axis_d);
+    updateCharts(gasolineSvg, gasolineData, tooltipDiv_g, "gasoline", x_axis_g, y_axis_g, x_axis_label_g, y_axis_label_g);
+    updateCharts(dieselSvg, dieselData, tooltipDiv_d, "diesel", x_axis_d, y_axis_d,x_axis_label_d, y_axis_label_d);
 
 
     // Adding annotations
@@ -276,7 +298,7 @@ async function init() {
 async function changeCategory() {
     // Read data
     const data = await d3.csv("cars2017.csv", function(d) {
-        return {Make: d.Make+"_"+d.EngineCylinders, Fuel: d.Fuel, EngineCylinders: d.EngineCylinders, AverageHighwayMPG: d.AverageHighwayMPG, AverageCityMPG: d.AverageCityMPG, OnlyMake: d.Make }
+        return {Make: d.Make+" ("+d.EngineCylinders+")", Fuel: d.Fuel, EngineCylinders: d.EngineCylinders, AverageHighwayMPG: d.AverageHighwayMPG, AverageCityMPG: d.AverageCityMPG, OnlyMake: d.Make }
     });
     data.sort(function(a,b) {
         return a.EngineCylinders - b.EngineCylinders;
@@ -284,21 +306,18 @@ async function changeCategory() {
     gasolineData = data.filter(function(d) {return d.Fuel == "Gasoline";});
     dieselData = data.filter(function(d) {return d.Fuel == "Diesel";});
 
-    var cat = document.getElementById("mpgCategory");
-    document.getElementById("Category").value = cat.options[cat.selectedIndex].text;
-    selectedCategory = cat.options[cat.selectedIndex].value;
-    updateCharts(gasolineSvg, selectedCategory, gasolineData, tooltipDiv_g, "gasoline", x_axis_g, y_axis_g);
-    updateCharts(dieselSvg, selectedCategory, dieselData, tooltipDiv_d, "diesel", x_axis_d, y_axis_d);
+    updateCharts(gasolineSvg, gasolineData, tooltipDiv_g, "gasoline", x_axis_g, y_axis_g, x_axis_label_g, y_axis_label_g);
+    updateCharts(dieselSvg, dieselData, tooltipDiv_d, "diesel", x_axis_d, y_axis_d,x_axis_label_d, y_axis_label_d);
 }
 
-function updateCharts(svg, category, data, toolTipDiv1, className, x_axis, y_axis) {
-    console.log(category);
+function updateCharts(svg, data, toolTipDiv1, className, x_axis, y_axis, x_axis_label, y_axis_label) {
+    // Find parameter value
+    var cat = document.getElementById("mpgCategory");
+    var category = cat.options[cat.selectedIndex].value;
     svg.selectAll("rect."+className).remove();
     xs.domain(data.map(function(d) { return d.Make; }));
     var y_max = d3.max(data, function(d) {return d[category];});
-    if (data.length == 6){
-    console.log("Y max: " + y_max);
-    }
+
     ys.domain([0, d3.max(data, function(d) {return d[category];})]);
 
     var c1 = svg.append("g")
@@ -342,13 +361,8 @@ function updateCharts(svg, category, data, toolTipDiv1, className, x_axis, y_axi
                         .attr("transform", "translate(-15,10)rotate(-45)");
 
             // text label for the x axis
-            svg.append("text")
-              .attr("transform",
-                    "translate(" + (width/2) + " ," +
-                                   (height + margin * 2) + ")")
-              .style("text-anchor", "middle")
-              .attr("class", "axis")
-              .text("Make");
+            x_axis_label
+              .text("Make (Number of Cylinders)");
 
 
             y_axis.transition()
@@ -356,13 +370,8 @@ function updateCharts(svg, category, data, toolTipDiv1, className, x_axis, y_axi
                 .call(d3.axisLeft(ys).ticks(5));
 
             // text label for the y axis
-            svg.append("text")
-              .attr("transform", "rotate(-90)")
-              .attr("y", 130 - margin)
-              .attr("x",0 - (height / 2) - 90)
-              .attr("dy", "1em")
-              .style("text-anchor", "middle")
-              .text("Average Mile");
+            y_axis_label
+              .text(cat.options[cat.selectedIndex].text);
 
 
 }
