@@ -294,7 +294,7 @@ function updateChart(data) {
 async function changeCategory() {
     // Read data
     const data = await d3.csv("cars2017.csv", function(d) {
-        return {Make: d.Make+"_"+d.EngineCylinders, Fuel: d.Fuel, EngineCylinders: d.EngineCylinders, AverageHighwayMPG: d.AverageHighwayMPG, AverageCityMPG: d.AverageCityMPG, OnlyMake: d.Make }
+        return {Make: d.Make+" ("+d.EngineCylinders+")", Fuel: d.Fuel, EngineCylinders: d.EngineCylinders, AverageHighwayMPG: d.AverageHighwayMPG, AverageCityMPG: d.AverageCityMPG, OnlyMake: d.Make }
     });
     data.sort(function(a,b) {
         return a.EngineCylinders - b.EngineCylinders;
