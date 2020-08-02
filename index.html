@@ -41,6 +41,21 @@
             color: black;
 		}
 
+    .friendly {
+        stroke: darkgreen;
+        stroke-width: 2;
+    }
+
+    .unfriendly {
+        stroke: darkred;
+        stroke-width: 2;
+    }
+
+    .anno {
+        stroke: black;
+        stroke-width: 2;
+    }
+
     </style>
 </head>
 <script src='https://d3js.org/d3.v5.min.js'></script>
@@ -71,7 +86,7 @@
 
 // Define canvas scales
 var svgWidth = 800;
-var svgHeight = 650;
+var svgHeight = 550;
 var margin = 50;
 var width = svgWidth - 2* margin;
 var height = svgHeight - 2 * margin;
@@ -85,7 +100,6 @@ async function init() {
     var manufacturer = d3.scaleBand().domain();
     var xs = d3.scaleLog().base(10).domain([10,150]).range([0, width]);
     var ys = d3.scaleLog().base(10).domain([10,150]).range([height, 0]);
-    var cs = d3.scaleLinear().domain([0, width]).range(["red","green"]);
     // https://github.com/d3/d3-scale-chromatic
     var colorscale = d3.scaleOrdinal(d3.schemeAccent).domain([0, width]);
     var num_colours = colour_range.length;
@@ -138,89 +152,177 @@ async function init() {
 
     svg.append("g")
         .attr("transform", "translate("+margin+","+(margin+ height)+")")
-        .call(d3.axisBottom(xs).tickValues([10,20,50,100,150]).tickFormat(d3.format("~s")));
+        .call(d3.axisBottom(xs)
+        .tickValues([10,20,50,100,150])
+        .tickFormat(d3.format("~s")));
 
+    // text label for the x axis
+     svg.append("text")
+      .attr("transform",
+            "translate(" + (width/2) + " ," +
+                           (height + margin + 40) + ")")
+      .style("text-anchor", "middle")
+      .attr("class", "axis")
+      .text("Average Highway MPG");
 
     svg.append("g")
         .attr("transform", "translate("+margin+","+margin+")")
-        .call(d3.axisLeft(ys).tickValues([10,20,50,100,150]).tickFormat(d3.format("~s")));
+        .call(d3.axisLeft(ys)
+        .tickValues([10,20,50,100,150])
+        .tickFormat(d3.format("~s")));
 
+     // text label for the y axis
+     svg.append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 0 - margin.left)
+      .attr("x",0 - (height / 2))
+      .attr("dy", "1em")
+      .style("text-anchor", "middle")
+        .text("Average City MPG");
 
-
+    // Annotations
     // Environment friendly cars
     svg.append("line")
-        .transition()
-        .duration(3000)
-        .attr("x1", 540)
+
+        .attr("x1", 530)
         .attr("y1", 150)
-        .attr("x2", 680)
-        .attr("y2", 20)
-        .attr("stroke", "green")
-        .attr("stroke-width", "1");
+        .attr("x2", 660)
+        .attr("y2", 40)
+        .attr("class", "friendly");
+
+    svg.append("line")
+
+        .attr("x1", 660)
+        .attr("y1", 40)
+        .attr("x2", 640)
+        .attr("y2", 50)
+        .attr("class", "friendly");
+
+    svg.append("line")
+
+        .attr("x1", 660)
+        .attr("y1", 40)
+        .attr("x2", 645)
+        .attr("y2", 60)
+        .attr("class", "friendly");
 
     svg.append("text")
-        .transition()
-        .duration(3000)
+
         .attr("dy", ".15em")
         .attr('text-anchor', 'middle')
         .attr("class", "text")
-        .attr("transform", "translate(610,70) rotate(319)")
+        .attr("transform", "translate(580,80) rotate(319)")
         .attr("fill", "darkgreen")
-        .text("Environment friendly cars -->");
+        .text("Environment friendly");
 
 
     // Not environment friendly cars
     svg.append("line")
-        .transition()
-        .duration(3000)
-        .attr("x1", 150)
-        .attr("y1", 550)
-        .attr("x2", 420)
-        .attr("y2", 250)
-        .attr("stroke", "darkred")
-        .attr("stroke-width", "1");
 
+        .attr("x1", 205)
+        .attr("y1", 400)
+        .attr("x2", 340)
+        .attr("y2", 290)
+        .attr("class", "unfriendly");
+
+    svg.append("line")
+
+        .attr("x1", 205)
+        .attr("y1", 400)
+        .attr("x2", 215)
+        .attr("y2", 380)
+        .attr("class", "unfriendly");
+
+    svg.append("line")
+
+        .attr("x1", 205)
+        .attr("y1", 400)
+        .attr("x2", 230)
+        .attr("y2", 390)
+        .attr("class", "unfriendly");
+
+    svg.append("text")
+
+        .attr("x", -60)
+        .attr("dy", ".15em")
+        .attr('text-anchor', 'middle')
+        .attr("class", "text")//easy to style with CSS
+        .attr("transform", "translate(300,290) rotate(320)")
+        .attr("fill", "darkred")
+        .text("Not Environment friendly");
+
+
+    // Electric cars
     svg.append("text")
         .transition()
         .duration(3000)
         .attr("x", -60)
         .attr("dy", ".15em")
         .attr('text-anchor', 'middle')
-        .attr("class", "text")//easy to style with CSS
-        .attr("transform", "translate(350,280) rotate(312)")
-        .attr("fill", "darkred")
-        .text("<-- Environment unfriendly cars ");
+        .attr("class", "text")
+        .attr("transform", "translate(780,180) rotate(0)")
+        .attr("fill", "black")
+        .text("Electric vehicles");
+
+    svg.append("line")
+        .transition()
+        .duration(3000)
+        .attr("x1", 680)
+        .attr("y1", 120)
+        .attr("x2", 720)
+        .attr("y2", 170)
+        .attr("class", "anno");
 
 
-    // text label for the x axis
-     svg.append("text")
-        .attr("x", 150)
+    svg.append("text")
+        .transition()
+        .duration(4000)
+        .attr("x", -60)
         .attr("dy", ".15em")
         .attr('text-anchor', 'middle')
-        .attr("class", "text")//easy to style with CSS
-        .attr("transform", "translate(300,640) rotate(0)")
+        .attr("class", "text")
+        .attr("transform", "translate(590,350) rotate(0)")
         .attr("fill", "black")
-        .text("Average Highway MPG");
+        .text("Most efficient per Avg Highway MPG");
 
-     // text label for the y axis
-     svg.append("text")
-        .attr("y", 350)
+    svg.append("line")
+        .transition()
+        .duration(4000)
+        .attr("x1", 420)
+        .attr("y1", 290)
+        .attr("x2", 550)
+        .attr("y2", 330)
+        .attr("class", "anno");
+
+    svg.append("text")
+        .transition()
+        .duration(5000)
+        .attr("x", -60)
         .attr("dy", ".15em")
         .attr('text-anchor', 'middle')
-        .attr("class", "text")//easy to style with CSS
-        .attr("transform", "translate(-330,300) rotate(270)")
+        .attr("class", "text")
+        .attr("transform", "translate(300,200) rotate(0)")
         .attr("fill", "black")
-        .text("Average City MPG");
+        .text("Most efficient per Avg City MPG");
+
+    svg.append("line")
+        .transition()
+        .duration(5000)
+        .attr("x1", 380)
+        .attr("y1", 275)
+        .attr("x2", 240)
+        .attr("y2", 220)
+        .attr("class", "anno");
+
 
      // mouseover text
      svg.append('g')
         .append('text')
-        .transition()
-        .duration(3000)
-        .attr("x", 460)
-        .attr("y", 560)
+
+        .attr("x", width - 160)
+        .attr("y", svgHeight - 10)
         .attr("id","anno")
-        .text("Please mouse over individual state for more details..")
+        .text("Please mouse over individual circle for more details..")
         .attr("font-size", "12px")
         .attr("font-weight","italic")
         .style("fill", "gray")

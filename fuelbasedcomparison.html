@@ -97,7 +97,7 @@
             </td>
             <td></td>
             <td>
-                <a href="diesel.html" class="next">Next Slide</a>
+                <a href="conclusion.html" class="next">Next Slide</a>
             </td>
         </tr>
     </table>
@@ -173,7 +173,7 @@ async function init() {
     xs = d3.scaleBand().padding(0.1).range([0, width]);
     ys = d3.scaleLinear().range([height, 0]);
     // https://github.com/d3/d3-scale-chromatic
-    colorscale = d3.scaleOrdinal().domain([2,3,4,6,8,10,12]).range(d3.schemeSet2);
+    colorscale = d3.scaleOrdinal().domain([2,3,4,6,8,10,12]).range(d3.schemeDark2);
 
     // https://stackoverflow.com/questions/24588883/populate-dropdown-list-with-csv-file-d3
     d3.select("#mpgCategory")
@@ -207,7 +207,7 @@ async function init() {
         .attr("x", 1130)
         .attr("y", 50)
         .style("fill","lightgrey")
-        .text("Hover over the bars to get more info");
+        .text("Please mouse over individual bar for more details..");
     gasolineSvg.append("text")
         .attr("y", 35)
         .attr("dy", ".15em")
@@ -231,6 +231,36 @@ async function init() {
         .style("stroke","red")
         .style("stroke-width","2");
     gasolineSvg.append("line")
+        .attr("x1", 1090)
+        .attr("y1", 105)
+        .attr("x2", 1100)
+        .attr("y2", 100)
+        .style("stroke","red")
+        .style("stroke-width","2");
+
+    dieselSvg.append("text")
+        .attr("y", 35)
+        .attr("dy", ".15em")
+        .attr('text-anchor', 'middle')
+        .attr("class", "text")//easy to style with CSS
+        .attr("transform", "translate(810,35) rotate(3)")
+        .attr("fill", "black")
+        .text("MPG reduces with increase in Engine cylinder");
+    dieselSvg.append("line")
+        .attr("x1", 500)
+        .attr("y1", 75)
+        .attr("x2", 1100)
+        .attr("y2", 100)
+        .style("stroke","red")
+        .style("stroke-width","2");
+    dieselSvg.append("line")
+        .attr("x1", 1090)
+        .attr("y1", 95)
+        .attr("x2", 1100)
+        .attr("y2", 100)
+        .style("stroke","red")
+        .style("stroke-width","2");
+    dieselSvg.append("line")
         .attr("x1", 1090)
         .attr("y1", 105)
         .attr("x2", 1100)
@@ -311,9 +341,28 @@ function updateCharts(svg, category, data, toolTipDiv1, className, x_axis, y_axi
                         .attr("dy", ".15em")
                         .attr("transform", "translate(-15,10)rotate(-45)");
 
+            // text label for the x axis
+            svg.append("text")
+              .attr("transform",
+                    "translate(" + (width/2) + " ," +
+                                   (height + margin * 2) + ")")
+              .style("text-anchor", "middle")
+              .attr("class", "axis")
+              .text("Make");
+
+
             y_axis.transition()
                 .duration(1000)
                 .call(d3.axisLeft(ys).ticks(5));
+
+            // text label for the y axis
+            svg.append("text")
+              .attr("transform", "rotate(-90)")
+              .attr("y", 130 - margin)
+              .attr("x",0 - (height / 2) - 90)
+              .attr("dy", "1em")
+              .style("text-anchor", "middle")
+              .text("Average Mile");
 
 
 }
