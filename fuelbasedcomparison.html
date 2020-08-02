@@ -35,18 +35,23 @@
         }
 
         .next {
-            background-color: green;
+            background-color: teal;
             color: white;
             position: relative;
 		}
         .previous {
-            background-color: green;
+            background-color: teal;
             color: white;
             position: relative;
 	    }
 
 	    div#nav {
 	        height: 5px;
+	    }
+
+	    .dropdown {
+	        background-color: darkorange;
+	        color: white;
 	    }
 
 
@@ -76,11 +81,11 @@
     <!-- Trigger -->
    <left>
        <label for="mpgCategory">Select MPG category</label>
-       <select id="mpgCategory" onchange="changeCategory()"></select>
+       <select id="mpgCategory" onchange="changeCategory()" class="dropdown"></select>
    </left>
 </div>
 
-<div style="text-align:right; float: right;" id="nav">
+<div style="text-align:right; float: right; padding-right: 25px;" id="nav">
     <table style="margin-left:auto;margin-right:auto;">
         <tr>
             <td>

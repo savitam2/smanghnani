@@ -29,12 +29,12 @@
           text-color:red;
         }
         .next {
-            background-color: green;
+            background-color: teal;
             color: white;
             position: relative;
 		}
         .previous {
-            background-color: green;
+            background-color: teal;
             color: white;
             position: relative;
 	    }
@@ -46,6 +46,11 @@
 	    .axis text {
           font: 18px sans-serif;
         }
+
+        .dropdown {
+	        background-color: darkorange;
+	        color: white;
+	    }
     </style>
 
 </head>
@@ -55,18 +60,19 @@
 <div>
     <p>
         Based on previous slide we can conclude the more the number of cylinders, lesser the fuel efficiency irrespective of fuel type thus less environment friendly the car.
-        Impact of fuel type is also pronounced on fuel efficiency city limit driving than highway driving. </br>
+        Impact of fuel type is also pronounced on fuel efficiency city limit driving than highway driving. For one driving in city limits most of the time can help environment
+        by using Gasoline based cars and for one driving mostly on highways can choose between either fuel types as the MPG from both is comparable. </br></br>
 
         One of the techniques manufacturers are applying these days to further the fuel efficiency even with more number of cylinders is <a href="https://www.jdpower.com/cars/shopping-guides/cylinder-deactivation-how-it-can-save-fuel"> partial shut down of cylinders</a>.
         The graph below depicts the top 10 car makes which provide better fuel efficiency with higher number of cylinders compared to lower number of cylinders as they employ partial cylinder deactivation. </br></br></br>    </p>
 
 </div>
 
-<div style="text-align:right; float: right;" id="nav">
+<div style="text-align:right; float: right; padding-right: 25px;" id="nav">
     <table style="margin-left:auto;margin-right:auto;">
         <tr>
             <td>
-                <a href="fuelbasedcomparison.html" class="previous">Fuel Based Comparison</a>
+                <a href="fuelbasedcomparison.html" class="previous">Fuel and Cylinder Based Comparison</a>
             </td>
             <td></td>
             <td>
@@ -84,7 +90,7 @@
     <!-- Trigger -->
     <left>
         <label for="mpgCategory">Select MPG category</label>
-        <select id="mpgCategory" onchange="changeCategory()"></select>
+        <select id="mpgCategory" onchange="changeCategory()" class="dropdown"></select>
     </left>
     <svg></svg>
 </div>
@@ -258,7 +264,7 @@ function updateChart(data) {
         .attr("dy", ".15em")
         .attr('text-anchor', 'middle')
         .attr("class", "text")//easy to style with CSS
-        .attr("transform", "translate(900,35) rotate(0)")
+        .attr("transform", "translate("+4*width/5+",35) rotate(0)")
         .attr("fill", "black")
         .transition()
         .duration(3000)
@@ -268,9 +274,9 @@ function updateChart(data) {
         svg.select("line.AverageHighwayMPG").remove();
         svg.append("line")
             .attr("class", category)
-            .attr("x1", 830)
+            .attr("x1", 2 *width/ 3 + 120)
             .attr("y1", 190)
-            .attr("x2", 870)
+            .attr("x2", 4 *width/ 5 )
             .attr("y2", 100)
             .style("stroke","black")
             .style("stroke-width","2");
@@ -279,9 +285,9 @@ function updateChart(data) {
         svg.select("line.AverageCityMPG").remove();
         svg.append("line")
             .attr("class", category)
-            .attr("x1", 750)
+            .attr("x1", 2 *width/ 3 + 20)
             .attr("y1", 160)
-            .attr("x2", 790)
+            .attr("x2", 4 *width/ 5)
             .attr("y2", 100)
             .style("stroke","black")
             .style("stroke-width","2");
