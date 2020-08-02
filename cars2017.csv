@@ -29,7 +29,7 @@ Cadillac,Gasoline,8,21,14
 Cadillac,Gasoline,4,32,22
 Cadillac,Gasoline,6,26,18
 Cadillac,Gasoline,8,21,15
-Chevrolet,Diesel,4,29,21
+Chevrolet,Diesel,4,29,23
 Chevrolet,Electricity,0,110,128
 Chevrolet,Gasoline,4,31,21
 Chevrolet,Gasoline,8,23,15
@@ -60,7 +60,7 @@ Ford,Gasoline,8,22,15
 Genesis,Gasoline,6,24,17
 Genesis,Gasoline,8,23,15
 Genesis,Gasoline,6,27,17
-GMC,Diesel,4,29,21
+GMC,Diesel,4,29,24
 GMC,Gasoline,4,27,20
 GMC,Gasoline,6,23,17
 GMC,Gasoline,8,21,15
@@ -106,7 +106,7 @@ Maserati,Gasoline,6,24,16
 Maserati,Gasoline,8,20,14
 Mazda,Gasoline,4,34,26
 Mazda,Gasoline,4,35,27
-McLaren Automotive,Gasoline,8,23,16
+McLaren Auto,Gasoline,8,23,16
 Mercedes-Benz,Electricity,0,82,85
 Mercedes-Benz,Gasoline,4,30,23
 Mercedes-Benz,Gasoline,6,25,19
@@ -130,7 +130,7 @@ Ram,Gasoline,8,21,14
 Ram,Gasoline,4,28,21
 Ram,Gasoline,6,24,17
 Rolls-Royce,Gasoline,12,19,12
-Roush Performance,Gasoline,8,23,14
+Roush Perf,Gasoline,8,23,14
 smart,Gasoline,3,39,32
 Subaru,Gasoline,4,27,21
 Subaru,Gasoline,4,33,25
