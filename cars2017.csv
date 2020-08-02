@@ -29,7 +29,7 @@ Cadillac,Gasoline,8,21,14
 Cadillac,Gasoline,4,32,22
 Cadillac,Gasoline,6,26,18
 Cadillac,Gasoline,8,21,15
-Chevrolet,Diesel,4,29,23
+Chevrolet,Diesel,4,30,23
 Chevrolet,Electricity,0,110,128
 Chevrolet,Gasoline,4,31,21
 Chevrolet,Gasoline,8,23,15
@@ -60,7 +60,7 @@ Ford,Gasoline,8,22,15
 Genesis,Gasoline,6,24,17
 Genesis,Gasoline,8,23,15
 Genesis,Gasoline,6,27,17
-GMC,Diesel,4,29,24
+GMC,Diesel,4,30,24
 GMC,Gasoline,4,27,20
 GMC,Gasoline,6,23,17
 GMC,Gasoline,8,21,15
