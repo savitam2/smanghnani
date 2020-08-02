@@ -31,6 +31,16 @@
           text-color:red;
         }
 
+        .next {
+            float: right;
+            background-color: #4CAF50;
+            color: white;
+		}
+    .previous {
+            background-color: #bac1ba;
+            color: black;
+		}
+
     </style>
 </head>
 <script src='https://d3js.org/d3.v5.min.js'></script>
@@ -40,9 +50,23 @@
 <h1>Fuel Efficiency Data, 2017</h1>
 <!-- Information about data -->
 <p>Show car fuel efficiency data</p>
+
+<div style="text-align:right">
+    <table style="margin-left:auto;margin-right:auto;">
+        <tr>
+
+            <td><p>Please <a href="fuelbasedcomparison.html">click here</a> for fuel based comparison </p></td>
+
+        </tr>
+    </table>
+</div>
+
+
+
+<div>
 <svg></svg>
-<input id="next" value="Next" type="button">
-<input id="page" value="scatterplot" hidden>
+</div>
+
 <script defer>
 
 // Define canvas scales
