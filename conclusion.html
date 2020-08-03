@@ -169,15 +169,21 @@ function updateChart(data) {
     var cat = document.getElementById("mpgCategory");
     var category = cat.options[cat.selectedIndex].value;
 
+    // Clear all Rect and Text fields
     svg.selectAll("rect").remove();
     svg.selectAll("text").remove();
+
+    // Find top 10 non-electric vehicles based on selected MPG category
     var topData = data.filter(function(d) {return d.EngineCylinders > 0;}).sort(function(a,b) {
         return b[category] - a[category];
     }).slice(0, 10);
+
+    // Define scale domain with data for selected MPG category
     xs.domain(topData.map(function(d) { return d.Make; }));
     var y_min = d3.min(topData, function(d) {return d[category];});
     var y_max = d3.max(topData, function(d) {return d[category];});
-    ys.domain([d3.min(topData, function(d) {return d[category];}) - 5, d3.max(topData, function(d) {return d[category];})]);
+    ys.domain([y_min - 5, y_max]);
+
     var g = svg.append("g")
         .attr("transform", "translate("+margin+","+margin+")");
       g.selectAll("rect")
@@ -208,6 +214,7 @@ function updateChart(data) {
         .enter()
         .append("text");
 
+    // Add fuel type annotation on each bar
     text.attr("x", function(d) {return xs(d.Make);})
         .attr("y", function(d) {return  ys(d[category]) - 3;})
         .attr("class", "axis")
@@ -258,7 +265,7 @@ function updateChart(data) {
         .attr("font-weight","italic")
         .style("fill", "gray");
 
-     // anomaly test
+     // anomaly text
     svg.append("text")
         .attr("y", 45)
         .attr("dy", ".15em")
