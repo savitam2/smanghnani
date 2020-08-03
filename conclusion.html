@@ -143,10 +143,6 @@ var tooltipDiv = d3.select("body").append("div")
         .style("opacity", 0);
 
 async function init() {
-    const data = await d3.csv("cars2017.csv", function(d) {
-        return {Make: d.Make+" ("+d.EngineCylinders+")", Fuel: d.Fuel, EngineCylinders: d.EngineCylinders, AverageHighwayMPG: d.AverageHighwayMPG, AverageCityMPG: d.AverageCityMPG, OnlyMake: d.Make }
-    });
-
     xs = d3.scaleBand().padding(0.5).range([0, width]);
     ys = d3.scaleLinear().range([height, 0]);
 
@@ -160,7 +156,8 @@ async function init() {
         .attr("value", function (d) { return d.value; })
         .text(function (d) { return d.label; });
 
-    updateChart(data);
+    // Render chart based on selected category
+    changeCategory();
 
 }
 

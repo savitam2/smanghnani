@@ -190,11 +190,7 @@ var x_axis_label_d = dieselSvg.append("text")
               .attr("class", "axis");
 
 async function init() {
-    // Read data
 
-    const data = await d3.csv("cars2017.csv", function(d) {
-        return {Make: d.Make+" ("+d.EngineCylinders+")", Fuel: d.Fuel, EngineCylinders: d.EngineCylinders, AverageHighwayMPG: d.AverageHighwayMPG, AverageCityMPG: d.AverageCityMPG, OnlyMake: d.Make }
-    });
     // Define scales
     xs = d3.scaleBand().padding(0.4).range([0, width]);
     ys = d3.scaleLinear().range([height, 0]);
@@ -219,18 +215,8 @@ async function init() {
         .attr("height", svgHeight)
         .attr("position", "fixed");
 
-    // Sort data based on number of cylinders to bring visual consistency
-    data.sort(function(a,b) {
-        return a.EngineCylinders - b.EngineCylinders;
-    });
 
-    // Filter data based on fuel type
-    gasolineData = data.filter(function(d) {return d.Fuel == "Gasoline";});
-    dieselData = data.filter(function(d) {return d.Fuel == "Diesel";});
-
-    // Render charts
-    updateCharts(gasolineSvg, gasolineData, tooltipDiv_g, "gasoline", x_axis_g, y_axis_g, x_axis_label_g, y_axis_label_g);
-    updateCharts(dieselSvg, dieselData, tooltipDiv_d, "diesel", x_axis_d, y_axis_d,x_axis_label_d, y_axis_label_d);
+    changeCategory();
 
     // Adding annotations
     gasolineSvg.append("text")
